@@ -32,6 +32,10 @@ if page.status_code != 200:
 soup = BeautifulSoup(page.content, "html.parser")
 text_content = soup.find_all("p", class_="texto")
 
-for text in text_content:
-	print(text.get_text())
+if len(text_content) == 0:
+	text_content = soup.find("div", class_="conteudo-interna")
+	print(text_content.get_text())
+else:
+	for text in text_content:
+		print(text.get_text())
 	
