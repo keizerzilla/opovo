@@ -10,6 +10,7 @@ import sys
 import base64
 import tempfile
 import requests
+import codecs
 import webbrowser
 from bs4 import BeautifulSoup
 
@@ -52,7 +53,7 @@ html = html_template.format(title, title, div_content)
 ## criando pagina em arquivo temporario
 temp_page = tempfile.NamedTemporaryFile(delete=False)
 path = temp_page.name + ".html"
-f = open(path, "w")
+f = codecs.open(path, "w", "utf-8")
 f.write(html)
 f.close()
 
