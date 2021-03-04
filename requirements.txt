@@ -1,2 +1,4 @@
 beautifulsoup4
-
+bleach
+python-telegram-bot
+telegraph-client
