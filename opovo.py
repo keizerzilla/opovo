@@ -4,7 +4,7 @@ autor:       Artur Rodrigues Rocha Neto
 contato:     artur.rodrigues26@gmail.com
 descrição:   Script que burla o paywall do jornal O Povo (www.opovo.com.br)
 uso:         Como bot Telegram ou como interface de linha de comando
-requisitors: beautifulsoup4, bleach, python-telegram-bot, telegraph_client
+requisitors: beautifulsoup4, bleach, python-telegram-bot, telegraph-client
 """
 
 import sys
