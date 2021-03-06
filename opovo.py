@@ -25,6 +25,14 @@ LOGFORMAT = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 
 def parse_url(url):
     """
+    Raspa notícia por trás do paywall do Jornal O Povo.
+    
+    Parâmetros
+    ----------
+        url: A url da notícia do O Povo.
+    Retorno
+    -------
+        Link Telegraph para matéria raspada.
     """
     
     page = None
@@ -93,6 +101,16 @@ def parse_url(url):
 
 def start(update, context):
     """
+    Função padrão de um bot Telegram.
+    Responde com mensagem instruindo o usuário sobre o uso.
+    
+    Parâmetros
+    ----------
+        update: Objeto com estado atual da conversa.
+        context: Objeto com informações gerais da API.
+    Retorno
+    -------
+        Nenhum.
     """
     
     txt = "Me envie um link do Portal O Povo que eu quebrarei o paywall para você. Leitura completa direta no Telegram."
@@ -100,6 +118,16 @@ def start(update, context):
 
 def echo(update, context):
     """
+    Função que gerencia a interação com o bot.
+    Recebe URL, chama função de raspagem e retorna resultado (além de limpar conversa).
+    
+    Parâmetros
+    ----------
+        update: Objeto com estado atual da conversa.
+        context: Objeto com informações gerais da API.
+    Retorno
+    -------
+        Nenhum.
     """
     
     ans = parse_url(update.message.text)
@@ -108,6 +136,15 @@ def echo(update, context):
 
 def cli(url):
     """
+    Função da interface de linha de comando.
+    Chama função de raspagem e mostra URL final na saída padrão.
+    
+    Parâmetros
+    ----------
+        url: A url da notícia do O Povo.
+    Retorno
+    -------
+        Nenhum.
     """
     
     ans = parse_url(url)
@@ -120,6 +157,14 @@ def cli(url):
 
 def start_bot():
     """
+    Função de interface com bot.
+    
+    Parâmetros
+    ----------
+        Nenhum.
+    Retorno
+    -------
+        Nenhum.
     """
     
     # log de erros e avisos
