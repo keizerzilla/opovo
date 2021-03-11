@@ -32,7 +32,7 @@ def parse_url(url):
         url: A url da notícia do O Povo.
     Retorno
     -------
-        Link Telegraph para matéria raspada.
+        Link Telegraph para matéria raspada ou mensagem de erro.
     """
     
     page = None
@@ -46,6 +46,7 @@ def parse_url(url):
     soup = BeautifulSoup(page.content, "html.parser")
     
     # procura titulo da materia
+    # classes possiveis: article-title, tit-noticia
     titulo = soup.find("h1", class_="article-title")
     if titulo:
         titulo = titulo.string.strip()
@@ -53,6 +54,7 @@ def parse_url(url):
         titulo = soup.find("h1", class_="tit-noticia").string.strip()
     
     # procura pela manchete
+    # classes possiveis: article-desc, abre-noticia
     manchete = soup.find("span", class_="article-desc")
     if manchete:
         manchete = manchete.string.strip()
@@ -61,13 +63,12 @@ def parse_url(url):
     manchete = "<h4>" + manchete + "</h4>"
     
     # procura nome do autor
-    nome_autor = ""
-    autor = soup.find("span", class_="by-author")
-    if autor:
-        nome_autor = autor.find("a").string
+    # classes possiveis: by-author, colunista-author
+    nome_autor = soup.find("span", class_="by-author")
+    if nome_autor:
+        nome_autor = nome_autor.find("a").string
     else:
-        autor = soup.find("span", class_="colunista-author")
-        nome_autor = autor.string
+        nome_autor = soup.find("span", class_="colunista-author").string
     
     # formatacao do conteudo textual
     conteudo = []
@@ -78,6 +79,9 @@ def parse_url(url):
             subcontent = [coisa.string for coisa in paragrafo.contents if coisa.string]
             conteudo.append("".join(subcontent).strip())
     
+    # geracao do HTML resultado
+    content = [manchete] + ["<p>" + txt + "</p>" for txt in conteudo if len(txt) > 0]
+    
     # procura div com o conteudo em si para raspar imagens
     container = soup.find("div", class_="text-container")
     if not container:
@@ -85,19 +89,19 @@ def parse_url(url):
     images = container.findAll("figure")
     if images:
         images = [str(img) for img in images]
-    
-    # geracao do HTML resultado
-    content = [manchete] + ["<p>" + txt + "</p>" for txt in conteudo if len(txt) > 0]
-    if images:
         content = content + images
+    
+    # gera HTML da pagina Telegraph
     content = "".join(content)
     content = html_to_content(content)
     
     # publicacao via API do Telegraph
-    telegraph = Telegraph(TOKEN_TELEGRAPH, timeout=60)
-    new_page = telegraph.create_page(title=titulo, author_name=nome_autor, content=content)
-    
-    return new_page.url
+    try:
+        telegraph = Telegraph(TOKEN_TELEGRAPH, timeout=60)
+        new_page = telegraph.create_page(title=titulo, author_name=nome_autor, content=content)
+        return new_page.url
+    except:
+        return "Não foi possível gerar a página... Tente mais tarde!"
 
 def start(update, context):
     """
