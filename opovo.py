@@ -1,9 +1,11 @@
 """
-arquivo:     opovo.py
-autor:       Artur Rodrigues Rocha Neto
-contato:     artur.rodrigues26@gmail.com
-descrição:   Script que burla o paywall do jornal O Povo (www.opovo.com.br)
-requisitors: beautifulsoup4
+arquivo:        opovo.py
+autor:          Artur Rodrigues Rocha Neto
+contato:        artur.rodrigues26@gmail.com
+github:         htttps://github.com/keizerzilla
+criação:        17/12/2020
+descrição:      Script que burla o paywall do jornal O Povo (www.opovo.com.br)
+pré-requisitos: beautifulsoup4
 """
 
 import sys
@@ -29,9 +31,11 @@ def parse_url(url):
     try:
         page = requests.get(url)
         if page.status_code != 200:
-            return "Não consegui quebrar essa página..."
+            print("Não consegui quebrar essa página (recurso não encontrado).")
+            return None
     except:
-        return "Não consegui quebrar essa página..."
+        print("Não consegui quebrar essa página (erro de conexão).")
+        return None
     
     soup = BeautifulSoup(page.content, "html.parser")
     
@@ -93,6 +97,10 @@ def cli(url):
     
     ans = parse_url(url)
     
+    if ans is None:
+        print("Abortando")
+        sys.exit()
+    
     print(ans["titulo"].upper())
     print(ans["autor"])
     print()
@@ -103,7 +111,7 @@ def cli(url):
             print(line)
         else:
             print(line[:80])
-            print(line[80:])
+            print(line[80:].strip())
         print()
 
 
@@ -136,6 +144,7 @@ def to_txt(url, filename=None):
         dump.write("\n\n")
         
         dump.write("\n\n".join(ans["conteudo"]))
+
 
 if __name__ == "__main__":
     if len(sys.argv) == 2:
